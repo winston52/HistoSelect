@@ -24,4 +24,4 @@ python extract_features_fp.py \
     --feat_dir /path/to/feature_directory \
     --model_name conch_v1
 ```
-> Before running the extraction, please ensure you have updated the model weight paths to your local directory in ```./models/build.py```.
+> Before running the extraction, please ensure you have updated the model weight paths to your local directory in ```./data_preprocessing/models/build.py```.
