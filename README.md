@@ -4,7 +4,7 @@
 ![framework](./figure/HistoSelect_framework.png)
 
 ### Recent Updates
-* **2026/04/08**: Updated the tissue segmentation code and shared the tissue segmentation results.
+* **2026/04/08**: Updated the tissue segmentation code.
 * 2026/04/01: Added feature extraction scripts and updated documentation.
 * 2026/03/30: The preprocessing code for tiling WSI into patches.
 * We are currently organizing the codebase. Stay tuned for further updates!
