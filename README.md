@@ -47,4 +47,4 @@ Note: Before execution, please ensure you have updated the model weight paths an
 The script produces a side-by-side reconstruction of the original WSI and the predicted tissue semantic map. An example is shown below:
 ![framework](./figure/TCGA-E5-A2PC-01Z-00-DX1.png)
 
-We also provide pre-computed tissue segmentation results for the TCGA cohort from the [SlideChat](https://github.com/uni-medical/SlideChat) and [WSI-LLava](https://github.com/XinhengLyu/WSI-LLaVA) datasets.
+We will also provide pre-computed tissue segmentation results for the TCGA cohort from the [SlideChat](https://github.com/uni-medical/SlideChat) and [WSI-LLava](https://github.com/XinhengLyu/WSI-LLaVA) datasets.
