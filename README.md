@@ -142,6 +142,7 @@ Predictions are saved to `./outputs/eval/predictions.json`.
 ## 🤝 Acknowledgments
 
 - [SlideChat](https://github.com/uni-medical/SlideChat) — the WSI VQA pipeline our framework is built on.
+- [WSI-LLaVA](https://github.com/XinhengLyu/WSI-LLaVA) — provide WSI-Bench dataset.
 - [DSMIL](https://github.com/binli123/dsmil-wsi) & [CLAM](https://github.com/mahmoodlab/CLAM) — data preprocessing (WSI tiling and patch feature extraction).
 - [CONCH](https://github.com/mahmoodlab/CONCH) — the vision-language model used for tissue segmentation and question-embedding generation.
 
