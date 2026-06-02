@@ -1,7 +1,7 @@
 <div align="center">
 <h1> [CVPR 2026] Act Like a Pathologist: Tissue-Aware Whole Slide Image Reasoning </h1>
 
-[Wentao Huang](https://winston52.github.io/)<sup>1</sup>, Weimin Lyu<sup>1</sup>, Peiliang Lou<sup>2</sup>, Qingqiao Hu<sup>1</sup>, Xiaoling Hu<sup>3</sup>, Shahira Abousamra<sup>4</sup>, Wenchao Han<sup>2</sup>, Ruifeng Guo<sup>2</sup>, Jiawei Zhou<sup>1</sup>, Chao Chen<sup>1</sup>, Chen Wang<sup>2</sup>
+[Wentao Huang](https://winston52.github.io/)<sup>1</sup>, [Weimin Lyu](https://weimin17.github.io/)<sup>1</sup>, [Peiliang Lou](https://scholar.google.com/citations?user=4qSntjYAAAAJ&hl=zh-CN)<sup>2</sup>, [Qingqiao Hu](https://winstonhutiger.github.io/)<sup>1</sup>, [Xiaoling Hu](https://huxiaoling.github.io/)<sup>3</sup>, [Shahira Abousamra](https://shahiraabousamra.github.io/)<sup>4</sup>, [Wenchao Han](https://www.mayo.edu/research/faculty/han-wenchao-pd-d/bio-20576975)<sup>2</sup>, [Ruifeng Guo](https://www.mayo.edu/research/faculty/guo-ray-m-d-ph-d/bio-20491543)<sup>2</sup>, [Jiawei Zhou](https://joezhouai.com/)<sup>1</sup>, [Chao Chen](https://chaochen.github.io/)<sup>1</sup>, [Chen Wang](https://www.mayo.edu/research/faculty/wang-chen-ph-d/bio-20140227)<sup>2</sup>
 
 <sup>1</sup> Stony Brook University &nbsp;&nbsp; <sup>2</sup> Mayo Clinic &nbsp;&nbsp; <sup>3</sup> Harvard Medical School &nbsp;&nbsp; <sup>4</sup> Stanford University
 
