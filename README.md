@@ -13,7 +13,7 @@
 
 ## Introduction
 
-We propose **HistoSelect**, a tissue-aware hierarchical patch selector for whole slide image (WSI) reasoning. Inspired by how pathologists first locate relevant tissue regions and then attend to discriminative patches inside them, HistoSelect plugs a `GroupSelector → PatchSelector` head into a LLaVA-style multimodal LLM, trained with a variational information-bottleneck objective.
+We propose **HistoSelect**, a tissue-aware hierarchical patch selector for whole slide image (WSI) reasoning. Inspired by how pathologists first locate relevant tissue regions and then attend to discriminative patches inside them, HistoSelect plugs a `GroupSampler → PatchSelector` head into a LLaVA-style multimodal LLM, trained with a variational information-bottleneck objective.
 
 <div align="center">
 <img src="./figure/HistoSelect_framework.png" width="80%">
