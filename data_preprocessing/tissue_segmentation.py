@@ -25,7 +25,7 @@ print("--- Initializing Model and Settings ---")
 # --- Model Configuration ---
 model_cfg = 'conch_ViT-B-16'
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-checkpoint_path = '/data/wentao/CONCH/model/pytorch_model.bin'
+checkpoint_path = './data/models/conch_v1.pt'
 
 # --- GLOBAL LABEL & COLOR CONFIGURATION ---
 CLASSES = [

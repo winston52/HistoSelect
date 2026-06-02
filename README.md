@@ -1,50 +1,160 @@
-# HistoSelect
-* This repository contains the official implementation for our work **"Act Like a Pathologist: Tissue-Aware Whole Slide Image Reasoning"**, accepted by **CVPR 2026**.
+<div align="center">
+<h1> [CVPR 2026] Act Like a Pathologist: Tissue-Aware Whole Slide Image Reasoning </h1>
 
-![framework](./figure/HistoSelect_framework.png)
+[Wentao Huang](https://winston52.github.io/)<sup>1</sup>, Weimin Lyu<sup>1</sup>, Peiliang Lou<sup>2</sup>, Qingqiao Hu<sup>1</sup>, Xiaoling Hu<sup>3</sup>, Shahira Abousamra<sup>4</sup>, Wenchao Han<sup>2</sup>, Ruifeng Guo<sup>2</sup>, Jiawei Zhou<sup>1</sup>, Chao Chen<sup>1</sup>, Chen Wang<sup>2</sup>
 
-### Recent Updates
-* **2026/04/08**: Updated the tissue segmentation code.
-* 2026/04/01: Added feature extraction scripts and updated documentation.
-* 2026/03/30: The preprocessing code for tiling WSI into patches.
+<sup>1</sup> Stony Brook University &nbsp;&nbsp; <sup>2</sup> Mayo Clinic &nbsp;&nbsp; <sup>3</sup> Harvard Medical School &nbsp;&nbsp; <sup>4</sup> Stanford University
+
+[![GitHub Project](https://img.shields.io/badge/GitHub-Project-blue?logo=github)](https://github.com/winston52/HistoSelect)
+[![arXiv](https://img.shields.io/badge/arXiv-2603.00667-b31b1b.svg)](https://arxiv.org/abs/2603.00667)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+</div>
+
+
+## Introduction
+
+We propose **HistoSelect**, a tissue-aware hierarchical patch selector for whole slide image (WSI) reasoning. Inspired by how pathologists first locate relevant tissue regions and then attend to discriminative patches inside them, HistoSelect plugs a `GroupSelector → PatchSelector` head into a LLaVA-style multimodal LLM, trained with a variational information-bottleneck objective.
+
+<div align="center">
+<img src="./figure/HistoSelect_framework.png" width="80%">
+</div>
+
+
+## 🔥 Recent Updates
+
+* **`2026/06/02`**: Updated the tissue segmentation files, training and testing code.
+* `2026/04/08`: Updated the tissue segmentation code.
+* `2026/04/01`: Added feature extraction scripts and updated documentation.
+* `2026/03/30`: The preprocessing code for tiling WSI into patches.
 * We are currently organizing the codebase. Stay tuned for further updates!
 
-### Part1: Data Preparation
-#### Step 1: Cut whole slide image into patches
+
+## 🛠️ Install
+
+Clone this repository and set up the conda environment:
+
 ```bash
-python deepzoom_tiler.py \
+git clone https://github.com/winston52/HistoSelect.git
+cd HistoSelect
+
+conda env create -f environment.yaml
+conda activate histoselect
+pip install -e .
+```
+
+
+## Step-by-step Tutorial
+
+### 1. Prepare Data
+
+#### 1.1 Cut whole slide images into patches
+
+```bash
+python data_preprocessing/deepzoom_tiler.py \
     --slide_path /path/to/your/wsi_folder \
     --output_base /path/to/output_directory \
     -m 1 -b 40 -s 224 -j 32 -t 15 -o 40 -c True
 ```
 
-#### Step 2: Extract the patch features
+#### 1.2 Extract patch features
+
 ```bash
-python extract_features_fp.py \
+python data_preprocessing/extract_features_fp.py \
     --patch_dir /path/to/output_directory/Patch \
     --feat_dir /path/to/feature_directory \
     --model_name conch_v1
 ```
-> Before running the extraction, please ensure you have updated the model weight paths to your local directory in ```./data_preprocessing/models/build.py```.
 
-### Part 2: Tissue Segmentation
-This step performs zero-shot tissue classification using a Vision-Language Model (e.g., CONCH) to generate a spatial segmentation map and weak labels for each patch.
+> Before running, place the CONCH model checkpoint at `./data/models/conch_v1.pt` (or edit the path inside `data_preprocessing/models/builder.py`).
 
-#### Input Requirements
-The segmentation script requires the outputs generated in **Part 1**:
-1.  **Patches**: `.png` tiles generated from **Step 1** (e.g., `Output/Patch/Slide_ID/`).
-2.  **Features (H5)**: Coordinate metadata files generated from **Step 2** (e.g., `Feature/h5_files/Slide_ID.h5`).
-3.  **WSI**: The original `.svs` slide for thumbnail visualization.
+#### 1.3 Tissue segmentation
 
-#### Execution
-Run the following script to process a slide. This will generate a prediction CSV, a tissue-label H5 file, and a visualization map.
+Generate a tissue-class map and per-patch weak labels using a Vision-Language Model (e.g., CONCH):
 
 ```bash
-python tissue_segmentation.py
+python data_preprocessing/tissue_segmentation.py
 ```
-Note: Before execution, please ensure you have updated the model weight paths and input/output directories to your local paths within `tissue_segmentation.py`.
 
-The script produces a side-by-side reconstruction of the original WSI and the predicted tissue semantic map. An example is shown below:
-![framework](./figure/TCGA-E5-A2PC-01Z-00-DX1.png)
+The script produces a side-by-side reconstruction of the original WSI and the predicted tissue semantic map:
 
-We will also provide pre-computed tissue segmentation results for the TCGA cohort from the [SlideChat](https://github.com/uni-medical/SlideChat) and [WSI-LLava](https://github.com/XinhengLyu/WSI-LLaVA) datasets.
+<div align="center">
+<img src="./figure/TCGA-E5-A2PC-01Z-00-DX1.png" width="80%">
+</div>
+
+Pre-computed tissue segmentation results for the TCGA cohort (covering both the [SlideChat](https://github.com/uni-medical/SlideChat) and [WSI-LLaVA](https://github.com/XinhengLyu/WSI-LLaVA) datasets) are available via Google Drive:
+
+> 📥 [**Download tissue segmentation (Google Drive)**](https://drive.google.com/file/d/1YEUn7MR-7J-xuNwk6MnjihEVjidpIbqN/view?usp=sharing)
+
+#### 1.4 Pre-compute question embeddings
+
+```bash
+python data_preprocessing/generate_question_embeddings.py \
+    --json /path/to/your_vqa.json \
+    --out  /path/to/output_question_embeddings.pt
+```
+
+
+### 2. Training and Evaluation
+
+Both training and evaluation require a stage-2 warmstart checkpoint. Download it from [SlideChat on HuggingFace](https://huggingface.co/General-Medical-AI/SlideChat_Weight/tree/main/stage2_pth) and place it at `./data/models/stage2.pth`.
+
+HistoSelect fine-tuned checkpoints are available via Google Drive:
+
+> 📥 [**Download HistoSelect weights (Google Drive)**](https://drive.google.com/drive/folders/1x9Pyh--tb7vowRRPh6N6sUQRQruleTx9?usp=sharing)
+>
+> - `histoselect_wsi-llava.pth` — HistoSelect trained on WSI-LLaVA
+> - `histoselect_slidechat.pth` — HistoSelect trained on SlideBench-VQA-TCGA
+
+#### 2.1 Training
+
+```bash
+bash scripts/histoselect_training.sh
+```
+
+This launches 4-GPU training with `xtuner/configs/histoselect/stage_2_selector.py`. Switch between WSI-LLaVA and SlideChat datasets by editing the `DATASET` variable at the top of the config. Checkpoints are saved to `work_dirs/histoselect_run/iter_*.pth/`.
+
+
+#### 2.2 Evaluation
+
+Run `scripts/histoselect_testing.sh` with the trained checkpoint and the appropriate test data:
+
+**WSI-LLaVA**
+
+```bash
+CKPT=<path-to-your-checkpoint.pth> \
+TEST_JSON=./data/instruct/stage_2_vqa_selector_wsi-llava/test_merge_cleaned.json \
+QEMB=./data/embeddings/wsi-llava_test_question_embeddings.pt \
+bash scripts/histoselect_testing.sh
+```
+
+**SlideChat (SlideBench-VQA-TCGA)**
+
+```bash
+CKPT=<path-to-your-checkpoint.pth> \
+TEST_JSON=./data/instruct/stage_2_vqa_selector_slidechat/SlideBench-VQA-TCGA.json \
+QEMB=./data/embeddings/SlideBench-VQA-TCGA_question_embeddings.pt \
+bash scripts/histoselect_testing.sh
+```
+
+Predictions are saved to `./outputs/eval/predictions.json`.
+
+
+## 🤝 Acknowledgments
+
+- [SlideChat](https://github.com/uni-medical/SlideChat) — the WSI VQA pipeline our framework is built on.
+- [DSMIL](https://github.com/binli123/dsmil-wsi) & [CLAM](https://github.com/mahmoodlab/CLAM) — data preprocessing (WSI tiling and patch feature extraction).
+- [CONCH](https://github.com/mahmoodlab/CONCH) — the vision-language model used for tissue segmentation and question-embedding generation.
+
+
+## ✏️ Reference
+
+If you find HistoSelect useful in your research or applications, please consider giving a star ⭐ and citing using the following BibTeX:
+
+```bibtex
+@inproceedings{huang2026act,
+  title={Act Like a Pathologist: Tissue-Aware Whole Slide Image Reasoning},
+  author={Huang, Wentao and Lyu, Weimin and Lou, Peiliang and Hu, Qingqiao and Hu, Xiaoling and Abousamra, Shahira and Han, Wenchao and Guo, Ruifeng and Zhou, Jiawei and Chen, Chao and Wang, Chen},
+  booktitle={CVPR},
+  year={2026}
+}
+```
