@@ -83,7 +83,7 @@ The script produces a side-by-side reconstruction of the original WSI and the pr
 
 Pre-computed tissue segmentation results for the TCGA cohort (covering both the [SlideChat](https://github.com/uni-medical/SlideChat) and [WSI-LLaVA](https://github.com/XinhengLyu/WSI-LLaVA) datasets) are available via Google Drive:
 
-> 📥 [**Download tissue segmentation (Google Drive)**](https://drive.google.com/file/d/1YEUn7MR-7J-xuNwk6MnjihEVjidpIbqN/view?usp=sharing)
+> 📥 [**Download tissue segmentation (Google Drive)**](https://drive.google.com/drive/folders/1KsyUE1sLEBGb2tYck1tb6I0jnxK4khMx?usp=sharing)
 
 #### 1.4 Pre-compute question embeddings
 
