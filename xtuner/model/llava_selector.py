@@ -793,7 +793,8 @@ class LLaVAModel_Selector(BaseModel):
                         patch_selection_probs_i, patch_logits_i = self.patch_selector(patches_in_group.to(self.llm.dtype), projected_q_emb.to(self.llm.dtype))
  
                         K_i_float = group_prob_i.detach() * group_count_i.detach()
-                        K_i = torch.round(K_i_float).int().item()
+                        # ceil (paper Eq. 5): every non-empty group keeps >= 1 patch
+                        K_i = torch.ceil(K_i_float).int().item()
                         K_i = min(max(0, K_i), int(group_count_i.item()))
                         
                         if K_i > 0:
@@ -825,9 +826,9 @@ class LLaVAModel_Selector(BaseModel):
                             ).detach().to(self.llm.dtype)
 
                             # Calculate Binary Cross-Entropy Loss using the stable logit-based function
-                            loss_fn_patch = torch.nn.BCEWithLogitsLoss(reduction='mean') 
+                            loss_fn_patch = torch.nn.BCEWithLogitsLoss(reduction='mean')
                             bce_loss_patch = loss_fn_patch(
-                                p_posterior_logits.to(torch.float32), 
+                                p_posterior_logits.to(torch.float32),
                                 p_prior_probs.to(torch.float32)
                             )
                             active_group_patch_losses.append(bce_loss_patch)

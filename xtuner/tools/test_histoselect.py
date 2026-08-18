@@ -302,7 +302,8 @@ def main():
                             
                             # Determine K_i (number of patches to select from this group)
                             K_i_float = group_prob_i.detach() * group_count_i.detach()
-                            K_i = torch.round(K_i_float).int().item()
+                            # ceil (paper Eq. 5): every non-empty group keeps >= 1 patch
+                            K_i = torch.ceil(K_i_float).int().item()
                             K_i = min(max(0, K_i), int(group_count_i.item()))
                             
                             actual_samples_per_group[group_idx] = K_i # Store for logging
@@ -320,6 +321,8 @@ def main():
                     original_token_count = pixel_values.shape[1]
                     if final_selected_indices:
                         all_selected_indices = torch.cat(final_selected_indices)
+                        # match training token order: ascending patch index (training uses torch.nonzero)
+                        all_selected_indices = torch.sort(all_selected_indices)[0]
                         pixel_values = pixel_values.squeeze(0)[all_selected_indices].unsqueeze(0)
                     else:
                         pixel_values = torch.zeros(B, 0, D_feat, device=pixel_values.device, dtype=pixel_values.dtype)
